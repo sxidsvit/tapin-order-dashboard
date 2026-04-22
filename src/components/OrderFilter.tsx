@@ -1,5 +1,6 @@
 import { cn } from '../lib/utils';
 import { OrderStatus } from '../types';
+import { FILTERS } from '../constants';
 
 interface OrderFilterProps {
   currentStatus: OrderStatus | 'all';
@@ -7,19 +8,10 @@ interface OrderFilterProps {
   stats: Record<string, number>;
 }
 
-const filters: { label: string; value: OrderStatus | 'all' }[] = [
-  { label: 'All Orders', value: 'all' },
-  { label: 'Pending', value: 'pending' },
-  { label: 'Preparing', value: 'preparing' },
-  { label: 'Ready', value: 'ready' },
-  { label: 'Completed', value: 'completed' },
-  { label: 'Cancelled', value: 'cancelled' },
-];
-
 export function OrderFilter({ currentStatus, onStatusChange, stats }: OrderFilterProps) {
   return (
     <div className="flex flex-wrap gap-2 mb-8 overflow-x-auto pb-2 sm:pb-0">
-      {filters.map((filter) => (
+      {FILTERS.map((filter) => (
         <button
           key={filter.value}
           id={`filter-${filter.value}`}

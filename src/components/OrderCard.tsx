@@ -3,29 +3,17 @@ import { CheckCircle2, ChevronRight, Clock, Coffee, Trash2, XCircle } from 'luci
 import { motion } from 'motion/react';
 import { cn, formatCurrency } from '../lib/utils';
 import { Order, OrderStatus } from '../types';
+import { ORDER_WORKFLOW, STATUS_COLORS } from '../constants';
 
 interface OrderCardProps {
   order: Order;
   onUpdateStatus: (orderId: string, newStatus: OrderStatus) => void;
   isUpdating?: boolean;
+  key?: string;
 }
 
-const statusColors: Record<OrderStatus, string> = {
-  pending: 'bg-amber-100 text-amber-800 border-amber-200',
-  preparing: 'bg-blue-100 text-blue-800 border-blue-200',
-  ready: 'bg-green-100 text-green-800 border-green-200',
-  completed: 'bg-slate-100 text-slate-600 border-slate-200',
-  cancelled: 'bg-red-100 text-red-800 border-red-200',
-};
-
-const nextStatus: Partial<Record<OrderStatus, OrderStatus>> = {
-  pending: 'preparing',
-  preparing: 'ready',
-  ready: 'completed',
-};
-
 export function OrderCard({ order, onUpdateStatus, isUpdating }: OrderCardProps) {
-  const next = nextStatus[order.status];
+  const next = ORDER_WORKFLOW[order.status];
 
   return (
     <motion.div
@@ -45,7 +33,7 @@ export function OrderCard({ order, onUpdateStatus, isUpdating }: OrderCardProps)
           </div>
           <span className={cn(
             "px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize",
-            statusColors[order.status]
+            STATUS_COLORS[order.status]
           )}>
             {order.status}
           </span>
