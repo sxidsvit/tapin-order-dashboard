@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { mockApi } from '../api/mockApi';
 import { Order, OrderStatus } from '../types';
+import { logger } from '../lib/logger';
 
 export function useOrders(filterStatus: OrderStatus | 'all') {
   const queryClient = useQueryClient();
@@ -15,7 +16,7 @@ export function useOrders(filterStatus: OrderStatus | 'all') {
   // OPTION A: SSE/WebSocket Strategy Sketch
   // In a real app, this would use a library like socket.io-client or native WebSocket
   useEffect(() => {
-    console.log('🔌 Connecting to Order Real-time Feed...');
+    logger.info('🔌 Connecting to Order Real-time Feed...');
     
     // Simulating incoming events
     const simulateEvent = () => {
@@ -24,7 +25,7 @@ export function useOrders(filterStatus: OrderStatus | 'all') {
     };
 
     return () => {
-      console.log('🔌 Disconnecting from Order Real-time Feed');
+      logger.info('🔌 Disconnecting from Order Real-time Feed');
     };
   }, [queryClient]);
 
@@ -59,7 +60,7 @@ export function useOrders(filterStatus: OrderStatus | 'all') {
       if (context?.previousOrders) {
         queryClient.setQueryData(['orders'], context.previousOrders);
       }
-      console.error('Mutation failed, rolled back:', err);
+      logger.error('Mutation failed, rolled back', err);
     },
 
     // Always refetch after error or success to keep server and client in sync

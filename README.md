@@ -20,6 +20,7 @@ To run this project locally:
 
 - [Original Task Description](./TASK_DESCRIPTION.md)
 - [Future Decisions & Roadmap](./FUTURE_IMPROVEMENTS.md)
+- [Security Audit Response (2026-04-23)](./SECURITY_RESPONSE.md)
 
 ## Approach & Tech Choices
 
