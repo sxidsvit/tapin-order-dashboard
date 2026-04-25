@@ -7,11 +7,11 @@ export const ORDER_WORKFLOW: Partial<Record<OrderStatus, OrderStatus>> = {
 };
 
 export const STATUS_COLORS: Record<OrderStatus, string> = {
-  pending: 'bg-amber-100 text-amber-800 border-amber-200',
-  preparing: 'bg-blue-100 text-blue-800 border-blue-200',
-  ready: 'bg-green-100 text-green-800 border-green-200',
-  completed: 'bg-slate-100 text-slate-600 border-slate-200',
-  cancelled: 'bg-red-100 text-red-800 border-red-200',
+  pending: 'bg-amber-100/40 text-amber-950 border-amber-200/50',
+  preparing: 'bg-blue-100/40 text-blue-950 border-blue-200/50',
+  ready: 'bg-emerald-100/40 text-emerald-950 border-emerald-200/50',
+  completed: 'bg-zinc-100 text-zinc-500 border-zinc-200',
+  cancelled: 'bg-orange-100/40 text-orange-950 border-orange-200/50',
 };
 
 export const FILTERS: { label: string; value: OrderStatus | 'all' }[] = [

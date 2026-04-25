@@ -10,28 +10,27 @@ interface OrderFilterProps {
 
 export function OrderFilter({ currentStatus, onStatusChange, stats }: OrderFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2 mb-8 overflow-x-auto pb-2 sm:pb-0">
+    <div className="flex flex-wrap gap-4 mb-10 overflow-x-auto pb-4 scrollbar-hide">
       {FILTERS.map((filter) => (
         <button
           key={filter.value}
           id={`filter-${filter.value}`}
           onClick={() => onStatusChange(filter.value)}
+          aria-pressed={currentStatus === filter.value}
           className={cn(
-            "px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer whitespace-nowrap border",
+            "px-6 py-4 rounded-xl text-[12px] font-bold uppercase tracking-widest transition-all cursor-pointer border-2 min-w-[120px] flex items-center justify-between gap-3 focus-ring",
             currentStatus === filter.value
-              ? "bg-slate-900 text-white border-slate-900 shadow-sm"
-              : "bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+              ? "bg-ink text-white border-ink shadow-[6px_6px_0_rgba(20,20,20,0.15)] -translate-y-0.5"
+              : "bg-white text-ink/70 border-line hover:border-ink/20 hover:text-ink/80"
           )}
         >
-          {filter.label}
-          {stats[filter.value] !== undefined && stats[filter.value] > 0 && (
-            <span className={cn(
-              "ml-2 text-xs opacity-70",
-              currentStatus === filter.value ? "text-white" : "text-slate-400"
-            )}>
-              {stats[filter.value]}
-            </span>
-          )}
+          <span>{filter.label}</span>
+          <span className={cn(
+            "px-2 py-0.5 rounded text-[10px] font-mono",
+            currentStatus === filter.value ? "bg-white/20 text-white" : "bg-ink/10 text-ink/80"
+          )}>
+            {(stats[filter.value] || 0).toString().padStart(2, '0')}
+          </span>
         </button>
       ))}
     </div>

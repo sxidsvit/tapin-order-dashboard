@@ -12,67 +12,87 @@ interface OrderCardProps {
   key?: string;
 }
 
+const item = {
+  hidden: { opacity: 0, y: 15 },
+  show: { opacity: 1, y: 0 }
+};
+
+const ACTION_LABELS: Partial<Record<OrderStatus, string>> = {
+  pending: 'Start Preparing',
+  preparing: 'Mark as Ready',
+  ready: 'Complete Order',
+};
+
 export function OrderCard({ order, onUpdateStatus, isUpdating }: OrderCardProps) {
   const next = ORDER_WORKFLOW[order.status];
+  const actionLabel = next ? ACTION_LABELS[order.status] : null;
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      variants={item}
       exit={{ opacity: 0, scale: 0.95 }}
-      whileHover={{ y: -2 }}
+      whileHover={{ y: -4 }}
       id={`order-card-${order.id}`}
-      className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all h-full flex flex-col"
+      className="kitchen-card overflow-hidden h-full flex flex-col"
     >
-      <div className="p-4 flex flex-col h-full gap-3">
+      <div className="px-6 py-5 flex flex-col h-full gap-5">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-slate-900 text-lg">{order.guestName}</h3>
-            <p className="text-xs text-slate-500 font-mono">#{order.id.split('-')[1]}</p>
+            <h3 className="font-bold text-ink text-xl leading-snug mb-1">{order.guestName}</h3>
+            <p className="mono-data">ID_{order.id.split('-')[1].toUpperCase()}</p>
           </div>
-          <span className={cn(
-            "px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize",
-            STATUS_COLORS[order.status]
-          )}>
+          <span 
+            role="status"
+            className={cn(
+              "status-pill shadow-sm",
+              STATUS_COLORS[order.status]
+            )}
+          >
             {order.status}
           </span>
         </div>
 
-        <div className="space-y-1.5 flex-1">
+        {/* Items List */}
+        <div className="flex-1 overflow-y-auto max-h-[180px] min-h-[100px] mb-6 pr-2 scrollbar-hide py-2">
           {order.items.map((item) => (
-            <div key={item.id} className="flex justify-between text-sm">
-              <span className="text-slate-600">
-                <span className="font-medium text-slate-900">{item.quantity}x</span> {item.name}
+            <div key={item.id} className="flex justify-between text-sm py-2 border-b border-line last:border-0 hover:bg-ink/[0.02]">
+              <span className="text-ink/80 flex items-center gap-2">
+                <span className="font-black text-[10px] bg-ink text-white w-6 h-6 flex items-center justify-center rounded-sm">
+                  {item.quantity}
+                </span> 
+                <span className="font-medium">{item.name}</span>
               </span>
-              <span className="text-slate-400 font-mono text-xs">{formatCurrency(item.price)}</span>
+              <span className="mono-data !opacity-100 font-black">{formatCurrency(item.price)}</span>
             </div>
           ))}
         </div>
 
-        <div className="pt-3 border-t border-slate-100 mt-auto">
-          <div className="flex justify-between items-center mb-3">
-            <div className="flex items-center text-xs text-slate-400 gap-1">
+        <div className="pt-5 border-t-2 border-line mt-auto">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center text-[10px] text-ink/80 gap-1.5 uppercase font-black tracking-[0.2em]">
               <Clock className="w-3 h-3" />
               {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
             </div>
-            <div className="font-bold text-slate-900">
-              {formatCurrency(order.total)}
+            <div className="text-right">
+              <p className="text-[10px] font-black uppercase tracking-widest text-ink/60 mb-1 leading-none">Total</p>
+              <p className="text-2xl font-black italic tracking-tighter text-ink leading-none">{formatCurrency(order.total)}</p>
             </div>
           </div>
 
-          <div className="flex gap-2">
-            {next && (
+          <div className="flex gap-3">
+            {next && actionLabel && (
               <button
                 id={`advance-status-${order.id}`}
                 onClick={() => onUpdateStatus(order.id, next)}
                 disabled={isUpdating}
-                className="flex-1 bg-slate-900 text-white rounded-lg py-2 text-sm font-medium flex items-center justify-center gap-1 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                aria-label={`Advance order to ${next}`}
+                className="action-btn flex-1 bg-ink text-white hover:bg-black shadow-[4px_4px_0_rgba(20,20,20,0.1)] active:shadow-none translate-y-0 active:translate-y-1"
               >
                 {order.status === 'pending' && <Coffee className="w-4 h-4" />}
                 {order.status === 'preparing' && <CheckCircle2 className="w-4 h-4" />}
-                {order.status === 'ready' && <ChevronRight className="w-4 h-4" />}
-                Advance to {next}
+                {order.status === 'ready' && <CheckCircle2 className="w-4 h-4" />}
+                {actionLabel}
               </button>
             )}
             
@@ -82,9 +102,10 @@ export function OrderCard({ order, onUpdateStatus, isUpdating }: OrderCardProps)
                 onClick={() => onUpdateStatus(order.id, 'cancelled')}
                 disabled={isUpdating}
                 title="Cancel Order"
-                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                aria-label="Cancel this order"
+                className="action-btn aspect-square p-0 w-12 bg-canvas border-2 border-line text-ink/60 hover:text-red-600 hover:border-red-200 hover:bg-red-50"
               >
-                <XCircle className="w-5 h-5" />
+                <XCircle className="w-6 h-6" />
               </button>
             )}
           </div>
